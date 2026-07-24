@@ -1,0 +1,12 @@
+# NOVA-16 CPU — Yosys Sentez Scripti
+# Çalıştır: yosys synth.ys
+
+read_verilog cpu_synth.v
+hierarchy -check -top nova16_cpu
+synth -top nova16_cpu -flatten
+opt -full
+opt_clean -purge
+abc -g cmos2
+opt_clean -purge
+stat
+write_verilog -noattr nova16_netlist.v

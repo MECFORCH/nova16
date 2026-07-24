@@ -1,0 +1,31 @@
+// NOVA-16 test programı — 1'den 10'a kadar toplama
+// $readmemh formatı: her satır bir 16-bit kelime (hex)
+// Bu dosyayı nova16_bram.v içindeki BRAM başlatır.
+//
+// Kaynak (test.asm):
+//   LI R1, 1      LI R2, 11     LI R3, 0      LI R4, 1
+//   loop: ADD R3,R3,R1  ADD R1,R1,R4  SUB R5,R1,R2  JNZ R5,loop
+//   OUT R3, 0     HALT
+//
+// Beklenen sonuç: port[0] = 55 (1+2+...+10)
+
+2880  // 0x0000: LI R1, 1      — üst kelime
+0001  // 0x0001:               — alt kelime (imm=1)
+2900  // 0x0002: LI R2, 11     — üst
+000B  // 0x0003:               — alt (imm=11)
+2980  // 0x0004: LI R3, 0      — üst
+0000  // 0x0005:               — alt (imm=0)
+2A00  // 0x0006: LI R4, 1      — üst
+0001  // 0x0007:               — alt (imm=1)
+05B2  // 0x0008: ADD R3,R3,R1  — loop başlangıcı
+0000  // 0x0009:
+0498  // 0x000A: ADD R1,R1,R4
+0000  // 0x000B:
+0A94  // 0x000C: SUB R5,R1,R2
+0000  // 0x000D:
+3681  // 0x000E: JNZ R5, -8
+FFF8  // 0x000F:
+4180  // 0x0010: OUT R3, 0
+0000  // 0x0011:
+FC00  // 0x0012: HALT
+0000  // 0x0013:

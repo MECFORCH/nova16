@@ -1,0 +1,1 @@
+- [NOVA-64 migration decisions](nova64-migration.md) — 64-bit veri yolu geçişinde kritik kararlar ve tuzaklar

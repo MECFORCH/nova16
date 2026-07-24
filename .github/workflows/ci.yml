@@ -1,0 +1,60 @@
+name: NOVA-64 CI
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  # ── 1. C araçlarını derle ve regresyon testlerini çalıştır ──
+  build-and-test:
+    name: Build & Regression Tests
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Araçları derle (sim, asm, dbg, hexdump)
+        run: make all
+
+      - name: Regresyon testlerini çalıştır
+        run: make test
+
+  # ── 2. Verilog simülasyonu (iverilog) ──────────────────────
+  verilog-sim:
+    name: Verilog Simulation (iverilog)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: iverilog kur
+        run: sudo apt-get install -y iverilog
+
+      - name: cpu.v testbench çalıştır
+        run: make sim-verilog
+
+  # ── 3. Yosys sentez kontrolü ───────────────────────────────
+  synth-check:
+    name: Synthesis Check (Yosys)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Yosys kur
+        run: sudo apt-get install -y yosys
+
+      - name: Sentez smoke-test
+        run: make synth-check
+
+  # ── 4. Formal doğrulama (Yosys SAT) ───────────────────────
+  formal:
+    name: Formal Verification (Yosys SAT)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Yosys kur
+        run: sudo apt-get install -y yosys
+
+      - name: Formal doğrulama (depth=20)
+        run: make formal

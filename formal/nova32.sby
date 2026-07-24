@@ -1,0 +1,25 @@
+# ============================================================
+# nova32.sby — SymbiYosys formal doğrulama konfigürasyonu
+#
+# Çalıştır:
+#   cd nova16/formal && sby -f nova32.sby
+#
+# Yosys SAT alternatifi (SymbiYosys gerekmez):
+#   make formal   (Makefile'da tanımlı)
+# ============================================================
+
+[options]
+mode bmc
+depth 30
+
+[engines]
+smtbmc z3
+
+[script]
+read -formal ../cpu.v
+read -formal nova32_props.v
+prep -top nova32_cpu_formal
+
+[files]
+../cpu.v
+nova32_props.v
